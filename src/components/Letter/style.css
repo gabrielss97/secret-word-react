@@ -1,9 +1,0 @@
-.letter-container {
-    padding: var(--lg);
-    background-color: var(--primary-color);
-    border-radius: var(--sm);
-    color: var(--secondary-color);
-    font-size: var(--xl);
-    text-transform: uppercase;
-    font-weight: 700;
-}
