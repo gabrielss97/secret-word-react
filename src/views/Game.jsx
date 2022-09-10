@@ -1,20 +1,28 @@
+import { useState, useRef } from "react";
 import "./style.css";
 
-import { useState } from "react";
-
-const Game = ({ verifyLetter }) => {
-  const [score, setScore] = useState(0);
-  const [trys, setTrys] = useState(3);
-
-  const [usedLetters, setusedLetters] = useState([]);
+const Game = ({
+  verifyLetter,
+  pickedWord,
+  pickedCategory,
+  letters,
+  guessedLetters,
+  wrongLetters,
+  guesses,
+  score,
+}) => {
   const [letter, setLetter] = useState("");
+  const letterInputRef = useRef(null);
 
-  function handleSubmit(e) {
-    e.preventDefault();
-    setusedLetters([...usedLetters, `${letter}, `]);
-    e.target[0].value = "";
-  }
+  const handleSubmit = (e) => {
+    // e.preventDefault();
 
+    verifyLetter(letter);
+
+    setLetter("");
+
+    letterInputRef.current.focus();
+  };
   return (
     <>
       <div className="header-container">
@@ -23,30 +31,47 @@ const Game = ({ verifyLetter }) => {
           Pontuação: <span className="red">{score}</span>
         </h2>
         <h2 className="hint">
-          Dica: <span className="red">Animal</span>
+          Dica: <span className="red">{pickedCategory}</span>
         </h2>
         <h2 className="trys">
-          Você ainda tem <span className="red">{trys}</span> tentativa(s).
+          Você ainda tem <span className="red">{guesses}</span> tentativa(s).
         </h2>
       </div>
       <div className="word-container" id="word">
-        
+        {letters.map((letter, i) =>
+          guessedLetters.includes(letter) ? (
+            <span key={i} className="letter">
+              {letter}
+            </span>
+          ) : (
+            <span key={i} className="blankSquare">
+              {letter}
+            </span>
+          )
+        )}
       </div>
       <div className="play-container">
         <h2 className="play-title">Tente advinhar uma letra da palavra:</h2>
-        <form className="play-wrapper" onSubmit={handleSubmit}>
+        <div className="play-wrapper">
           <input
             type="text"
             className="play-input"
             maxLength="1"
+            required
             onChange={(e) => setLetter(e.target.value)}
+            ref={letterInputRef}
+            value={letter}
           />
-          <button className="play-btn" type="submit" onClick={verifyLetter}>
+          <button className="play-btn" type="submit" onClick={handleSubmit}>
             Jogar
           </button>
-        </form>
+        </div>
         <h2>Letras já utilizadas: </h2>
-        <h2 className="play-used">{usedLetters}</h2>
+        <h2 className="play-used">
+          {wrongLetters.map((letter, i) => (
+            <span key={i}>{letter}</span>
+          ))}
+        </h2>
       </div>
     </>
   );
